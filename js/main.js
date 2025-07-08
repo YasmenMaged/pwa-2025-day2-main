@@ -72,3 +72,42 @@ async function updataData(userId,updatedData){
 updataData(1,{name:'osama mohamed',email:'osama@gamil.com'})
 
 // delete
+async function deleteDataById(userId) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_NAME, "readwrite");
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.delete(userId);
+
+    request.onsuccess = () => {
+      console.log(`User with id ${userId} deleted successfully`);
+      resolve(request.result);
+    };
+    request.onerror = () => {
+      console.error(`Error deleting user with id ${userId}`);
+      reject("Error deleting data");
+    };
+  });
+}
+
+// Example usage:
+// deleteDataById(1).then(() => console.log("User deleted")).catch((err) => console.error(err));
+// deleteAllData().then(() => console.log("All data cleared")).catch((err) => console.error(err));
+
+async function deleteAllData() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_NAME, "readwrite");
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.clear();
+
+    request.onsuccess = () => {
+      console.log("All data deleted successfully");
+      resolve(request.result);
+    };
+    request.onerror = () => {
+      console.error("Error deleting all data");
+      reject("Error deleting all data");
+    };
+  });
+}
